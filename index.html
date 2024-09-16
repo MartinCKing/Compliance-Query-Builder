@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ask ✅LinkedIn QARA - Med Minds🔎 | Compliance Query Builder</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        h1, h2 {
+            font-family: 'Verdana', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            background-image: url('wordcloud.png');
+            background-size: cover;
+            background-position: center;
+            text-align: center;
+            color: white;
+            padding: 60px 20px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 300px;
+        }
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.3);
+            z-index: 1;
+        }
+        .header-content {
+            z-index: 2;
+            background-color: white;
+            padding: 20px 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .header-content h1 {
+            font-size: 2.5rem;
+            color: #000;
+            font-weight: bold;
+        }
+        .header-content p {
+            font-size: 1.25rem;
+            color: #333;
+        }
+        .content-wrapper {
+            max-width: 1200px;
+            margin: auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border-radius: 8px;
+        }
+        .progress-container {
+            width: 100%;
+            background-color: #ddd;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+        .progress-bar {
+            height: 30px;
+            width: 0%;
+            background-color: #00ff00;
+            border-radius: 5px;
+            line-height: 30px;
+            color: #ffffff;
+            text-align: center;
+            font-weight: bold;
+            transition: width 0.3s ease;
+        }
+        .copilot-button {
+            background-color: #0077b5;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+        .copilot-button:hover {
+            background-color: #005582;
+        }
+        .query-block {
+            padding: 15px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: #ffffff;
+            white-space: pre-line;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        .query-block:nth-child(even) {
+            background-color: #e6f2ff;
+        }
+        .file-display {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+        .file-frame {
+            width: 100%;
+            max-width: 800px;
+            height: 500px;
+            border: 2px solid #0077b5;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        input[type="file"] {
+            display: block;
+            margin: 15px auto;
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            width: 50%;
+            cursor: pointer;
+            transition: border-color 0.3s ease;
+        }
+        input[type="file"]:focus {
+            border-color: #0077b5;
+            outline: none;
+        }
+        #nlp-status {
+            display: none;
+            font-size: 18px;
+            font-weight: bold;
+            color: #e63946;
+            margin: 15px 0;
+            text-align: center;
+        }
+        #clear-queries, #generate-queries {
+            background-color: red;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            margin-right: 15px;
+        }
+        #generate-queries {
+            background-color: green;
+        }
+        #custom-regulation {
+            width: 400px;
+            padding: 8px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <h1>Ask ✅LinkedIn QARA - Med Minds🔎</h1>
+            <p>Compliance Query Builder</p>
+        </div>
+    </div>
+
+    <div class="content-wrapper">
+        <div id="nlp-status">Running Advanced Natural Language Processing...</div>
+        <div>
+            <button id="clear-queries">Clear Queries</button>
+            <button id="generate-queries">Generate Queries</button>
+            <input type="text" id="custom-regulation" placeholder="Optional: Enter specific regulation, standard, or guidance">
+        </div>
+        <div class="progress-container">
+            <div class="progress-bar" id="progress-bar">0%</div>
+        </div>
+        <div id="query-display"></div>
+        <div class="window" id="file-checker">
+            <h2>Select Your File to Check</h2>
+            <input type="file" id="file-input-check" />
+            <div class="file-display">
+                <iframe id="pdf-viewer" class="file-frame"></iframe>
+                <div id="doc-viewer" class="file-frame"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/universal-sentence-encoder"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.2/mammoth.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/rtf.js/3.0.0/rtf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pptxgenjs/3.4.0/pptxgen.bundle.min.js"></script>
+
+    <script>
+        let nlpModel;
+        let currentText = ""; // Store the current text for reprocessing after clearing
+
+        // Load the NLP model (local processing)
+        async function loadNLPModel() {
+            const nlpStatus = document.getElementById('nlp-status');
+            nlpStatus.style.display = "block";
+            nlpStatus.innerText = "Loading Advanced Natural Language Processing Model...";
+            nlpModel = await use.load();
+            nlpStatus.innerText = "Advanced Natural Language Processing Model Loaded.";
+        }
+
+        // Strip HTML tags to get plain text for NLP processing
+        function stripHTML(html) {
+            const doc = new DOMParser().parseFromString(html, 'text/html');
+            return doc.body.textContent || "";
+        }
+
+        // Handle file uploads
+        document.getElementById('file-input-check').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            const pdfViewer = document.getElementById('pdf-viewer');
+            const docViewer = document.getElementById('doc-viewer');
+            pdfViewer.style.display = 'none';
+            docViewer.style.display = 'none';
+            docViewer.innerHTML = '';
+
+            if (file) {
+                const url = URL.createObjectURL(file);
+                const fileType = file.type;
+
+                if (fileType === 'application/pdf') {
+                    pdfViewer.src = url;
+                    pdfViewer.style.display = 'block';
+                    extractTextFromPDF(file);
+                } else if (fileType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+                    docViewer.style.display = 'block';
+                    extractTextFromDOCX(file, docViewer);
+                } else if (fileType === 'text/plain') {
+                    docViewer.style.display = 'block';
+                    extractTextFromTXT(file, docViewer);
+                } else if (fileType === 'application/rtf') {
+                    docViewer.style.display = 'block';
+                    extractTextFromRTF(file, docViewer);
+                } else if (fileType === 'application/vnd.ms-excel' || fileType === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
+                    docViewer.style.display = 'block';
+                    extractTextFromXLS(file, docViewer);
+                } else if (fileType === 'application/vnd.openxmlformats-officedocument.presentationml.presentation') {
+                    docViewer.style.display = 'block';
+                    extractTextFromPPTX(file, docViewer);
+                } else {
+                    alert('Unsupported file type. Please upload a PDF, DOCX, TXT, RTF, XLS, or PPTX file.');
+                }
+            }
+        });
+
+        // Extract text from PDF
+        function extractTextFromPDF(file) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const arrayBuffer = event.target.result;
+                pdfjsLib.getDocument({ data: arrayBuffer }).promise.then(pdf => {
+                    let textContent = '';
+                    const pagesPromises = [];
+
+                    for (let i = 1; i <= pdf.numPages; i++) {
+                        pagesPromises.push(pdf.getPage(i).then(page => {
+                            return page.getTextContent().then(text => {
+                                text.items.forEach(item => {
+                                    textContent += item.str + ' ';
+                                });
+                            });
+                        }));
+                    }
+
+                    Promise.all(pagesPromises).then(() => {
+                        currentText = textContent;
+                        autoGenerateQueries(textContent);
+                    });
+                });
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        // Extract text from DOCX
+        function extractTextFromDOCX(file, viewer) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                mammoth.convertToHtml({ arrayBuffer: event.target.result }).then(result => {
+                    viewer.innerHTML = result.value;
+                    const textContent = stripHTML(result.value);
+                    currentText = textContent;
+                    autoGenerateQueries(textContent);
+                }).catch(err => console.error("Error reading DOCX file:", err));
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        // Extract text from TXT
+        function extractTextFromTXT(file, viewer) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const textContent = event.target.result;
+                viewer.innerText = textContent;
+                currentText = textContent;
+                autoGenerateQueries(textContent);
+            };
+            reader.readAsText(file);
+        }
+
+        // Extract text from RTF
+        function extractTextFromRTF(file, viewer) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const rtfString = event.target.result;
+                const doc = new RTFJS.Document(rtfString);
+                doc.render().then(html => {
+                    viewer.innerHTML = html;
+                    const textContent = stripHTML(html);
+                    currentText = textContent;
+                    autoGenerateQueries(textContent);
+                });
+            };
+            reader.readAsText(file);
+        }
+
+        // Extract text from XLS (Excel)
+        function extractTextFromXLS(file, viewer) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const data = event.target.result;
+                const workbook = XLSX.read(data, { type: 'binary' });
+                let textContent = '';
+                
+                workbook.SheetNames.forEach(sheetName => {
+                    const worksheet = workbook.Sheets[sheetName];
+                    const sheetText = XLSX.utils.sheet_to_csv(worksheet);
+                    textContent += sheetText + '\n';
+                });
+                
+                viewer.innerText = textContent;
+                currentText = textContent;
+                autoGenerateQueries(textContent);
+            };
+            reader.readAsBinaryString(file);
+        }
+
+        // Extract text from PPTX (PowerPoint)
+        function extractTextFromPPTX(file, viewer) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const data = new Uint8Array(event.target.result);
+                const pptx = new PptxGenJS();
+                pptx.load(data).then(() => {
+                    let textContent = '';
+                    pptx.getSlides().forEach(slide => {
+                        slide.getElements().forEach(element => {
+                            if (element.type === 'text') {
+                                textContent += element.text + ' ';
+                            }
+                        });
+                    });
+                    viewer.innerText = textContent;
+                    currentText = textContent;
+                    autoGenerateQueries(textContent);
+                }).catch(err => console.error("Error reading PPTX file:", err));
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        // Automatically trigger Advanced NLP processing and query generation
+        async function autoGenerateQueries(text) {
+            if (!nlpModel) await loadNLPModel();
+            
+            let sentences = text.match(/[^.?!]+[.?!]\s*/g) || [];
+            let queries = [];
+            let customText = document.getElementById('custom-regulation').value.trim();
+            let defaultQuery = customText ? `Is this compliant with ${customText}? ` : 
+                              'What are the applicable regulations, standards, and guidances for this document, and is this document compliant? ';
+            
+            const batchSize = 50;  // Process 50 sentences per batch
+            let currentBatch = [];
+            for (let i = 0; i < sentences.length; i++) {
+                currentBatch.push(sentences[i]);
+                if (currentBatch.length === batchSize || i === sentences.length - 1) {
+                    await processBatch(currentBatch, defaultQuery, queries);
+                    currentBatch = [];
+                }
+                updateProgress(Math.min(100, Math.round((i / sentences.length) * 100)));
+            }
+            
+            displayQueries(queries);
+        }
+
+        async function processBatch(batch, defaultQuery, queries) {
+            let currentQuery = defaultQuery;
+            for (let sentence of batch) {
+                if (currentQuery.length + sentence.length > 4000) {
+                    queries.push(currentQuery);
+                    currentQuery = defaultQuery + sentence;
+                } else {
+                    currentQuery += sentence;
+                }
+            }
+            if (currentQuery) queries.push(currentQuery);
+        }
+
+        // Display generated queries
+        function displayQueries(queries) {
+            const queryDisplay = document.getElementById('query-display');
+            queryDisplay.innerHTML = '';
+            
+            const batchSize = 10;  // Render 10 queries at a time
+            let i = 0;
+
+            function renderBatch() {
+                for (let j = 0; j < batchSize && i < queries.length; j++, i++) {
+                    const queryBlock = document.createElement('div');
+                    queryBlock.className = 'query-block';
+                    queryBlock.textContent = queries[i];
+        
+                    const button = document.createElement('button');
+                    button.className = 'copilot-button';
+                    button.textContent = 'Search on Bing';
+
+                    // Use a closure to ensure the correct query is passed to the event handler
+                    (function(query) {
+                        button.addEventListener('click', function() {
+                            window.open(`https://www.bing.com/search?q=${encodeURIComponent(query)}`);
+                        });
+                    })(queries[i]);
+
+                    queryBlock.appendChild(button);
+                    queryDisplay.appendChild(queryBlock);
+                }
+                
+                if (i < queries.length) {
+                    setTimeout(renderBatch, 100);  // Throttle by 100ms to avoid blocking the UI
+                } else {
+                    document.getElementById('nlp-status').style.display = "none";
+                    updateProgress(100);  // Mark completion
+                }
+            }
+
+            renderBatch();
+        }
+
+        // Clear all queries
+        document.getElementById('clear-queries').addEventListener('click', function() {
+            document.getElementById('query-display').innerHTML = '';
+        });
+
+        // Generate queries again when clicked
+        document.getElementById('generate-queries').addEventListener('click', function() {
+            if (currentText) {
+                autoGenerateQueries(currentText);
+            } else {
+                alert("No document loaded or queries have been cleared.");
+            }
+        });
+
+        // Progress bar update
+        function updateProgress(percent) {
+            const progressBar = document.getElementById('progress-bar');
+            progressBar.style.width = `${percent}%`;
+            progressBar.textContent = `${percent}%`;
+        }
+
+        // Trigger NLP model load on page load
+        window.onload = function() {
+            loadNLPModel();
+        };
+
+        // Auto-update queries when custom regulation text is updated
+        document.getElementById('custom-regulation').addEventListener('input', function() {
+            const textContent = document.getElementById('doc-viewer').textContent || document.getElementById('pdf-viewer').contentDocument.body.innerText;
+            autoGenerateQueries(textContent);
+        });
+    </script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-81366NTXDQ');
+</script>
+</body>
+</html>
