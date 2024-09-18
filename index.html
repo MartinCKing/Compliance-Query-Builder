@@ -225,8 +225,9 @@
             const file = event.target.files[0];
             const pdfViewer = document.getElementById('pdf-viewer');
             const docViewer = document.getElementById('doc-viewer');
-            pdfViewer.style.display = 'none';
-            docViewer.style.display = 'none';
+            // Hide both viewers initially
+            pdfViewer.classList.remove('show');
+            docViewer.classList.remove('show');
             docViewer.innerHTML = '';
 
             if (file) {
