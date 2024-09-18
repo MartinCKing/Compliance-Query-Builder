@@ -225,11 +225,11 @@
             const file = event.target.files[0];
             const pdfViewer = document.getElementById('pdf-viewer');
             const docViewer = document.getElementById('doc-viewer');
+            
             // Hide both viewers initially
             pdfViewer.classList.remove('show');
             docViewer.classList.remove('show');
-            docViewer.innerHTML = '';
-
+            
             if (file) {
                 const url = URL.createObjectURL(file);
                 const fileType = file.type;
