@@ -434,7 +434,7 @@
                     // Use a closure to ensure the correct query is passed to the event handler
                     (function(query) {
                         button.addEventListener('click', function() {
-                            window.open(`https://www.bing.com/search?q=${encodeURIComponent(query)}`);
+                            window.open(`https://www.bing.com/copilotsearch?q=${encodeURIComponent(query)}`);
                         });
                     })(queries[i]);
 
@@ -531,4 +531,5 @@
 </script>
 </body>
 </html>
+
 
